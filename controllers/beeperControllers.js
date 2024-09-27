@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { getAllBeepers, findBeeperById, findBeepersByStatus, deleteBeeper, createBeeper } from '../services/beeperService.js';
+import { getAllBeepers, findBeeperById, findBeepersByStatus, deleteBeeper, createBeeper, updateBeeperLocation, updateStatus } from '../services/beeperService.js';
 import BeeperStatus from '../statuses/beeperStatuses.js';
 // the function calls the getAllBeepers function from the service, => =>
 // if its good the function sends them 
@@ -80,3 +80,40 @@ export const createBeeperController = (req, res) => __awaiter(void 0, void 0, vo
         res.status(500).json({ message: 'Error creating beeper', error });
     }
 });
+export function updateLocationController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { lon, lat } = req.body;
+        const beeperId = req.params.id;
+        const lonNumber = parseFloat(lon);
+        const latNumber = parseFloat(lat);
+        try {
+            const updatedBeeper = yield updateBeeperLocation(beeperId, lonNumber, latNumber);
+            res.status(200).json({
+                message: 'Beeper location updated successfully.',
+                beeper: updatedBeeper
+            });
+        }
+        catch (error) {
+            res.status(400).json({
+                message: "invalid request"
+            });
+        }
+    });
+}
+export function updateBeeperStatusController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const beeperId = req.params.id;
+        try {
+            const updatedBeeper = yield updateStatus(beeperId);
+            res.status(200).json({
+                message: 'Beeper status updated successfully.',
+                status: updatedBeeper.status
+            });
+        }
+        catch (error) {
+            res.status(400).json({
+                message: "cant change the status"
+            });
+        }
+    });
+}

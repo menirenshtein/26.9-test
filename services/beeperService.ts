@@ -78,3 +78,37 @@ export async function updateBeeperLocation(beeperId: string, lon: number, lat: n
     await writeToJsonFile(beepers);
     return beeper;
 }
+
+
+// the function gets an id and finds the beeper' => =>
+// the function creates an array from all the statuses => =>
+// the funcion find the "index" of the beeper.status, => =>
+// if the status == deployed the function checks if the biiper has location   
+export async function updateStatus(beeperId: string): Promise<Beeper | null> {
+    const beepers: Beeper[] = await readAllBeepers();
+    const beeper = beepers.find(b => b.id === beeperId);
+
+    if (!beeper) {
+        throw new Error('Beeper not found');
+    }
+    const allStatusesInArray = Object.values(BeeperStatus);
+
+    const currentStatusIndex = allStatusesInArray.indexOf(beeper.status);
+
+    if (currentStatusIndex === allStatusesInArray.length - 1) {
+        throw new Error('Cannot progress status. Already at the final status.');
+    }
+
+    const newStatus = allStatusesInArray[currentStatusIndex + 1];
+
+    if (newStatus === BeeperStatus.Deployed) {
+        if (!beeper.location?.lon || !beeper.location.lat) {
+            throw new Error('Cannot deploy beeper without valid location (lon/lat)');
+        }
+    }
+
+    beeper.status = newStatus;
+
+    await writeToJsonFile(beepers);
+    return beeper; 
+}

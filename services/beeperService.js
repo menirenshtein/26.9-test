@@ -60,27 +60,48 @@ export function createBeeper(name) {
 }
 export function updateBeeperLocation(beeperId, lon, lat) {
     return __awaiter(this, void 0, void 0, function* () {
-        // Find the index of the given longitude
         const lonIndex = Longitude.indexOf(lon);
-        // Validate that the latitude exists at the same index as the longitude
         if (lonIndex === -1 || Latitude[lonIndex] !== lat) {
             throw new Error('Invalid location: Longitude and Latitude do not match at the same index.');
         }
-        // Get all beepers
         const beepers = yield readAllBeepers();
-        // Find the beeper by its ID
         const beeper = beepers.find((b) => b.id === beeperId);
         if (!beeper) {
             throw new Error(`Beeper with ID ${beeperId} not found.`);
         }
-        // Update the beeper's location (assuming beeper has a location field)
         beeper.location = {
             lon: lon,
             lat: lat
         };
-        // Save the updated beepers back to the JSON file
         yield writeToJsonFile(beepers);
-        // Return the updated beeper
+        return beeper;
+    });
+}
+// the function gets an id and finds the beeper' => =>
+// the function creates an array from all the statuses => =>
+// the funcion find the "index" of the beeper.status, => =>
+// if the status == deployed the function checks if the biiper has location   
+export function updateStatus(beeperId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        const beepers = yield readAllBeepers();
+        const beeper = beepers.find(b => b.id === beeperId);
+        if (!beeper) {
+            throw new Error('Beeper not found');
+        }
+        const allStatusesInArray = Object.values(BeeperStatus);
+        const currentStatusIndex = allStatusesInArray.indexOf(beeper.status);
+        if (currentStatusIndex === allStatusesInArray.length - 1) {
+            throw new Error('Cannot progress status. Already at the final status.');
+        }
+        const newStatus = allStatusesInArray[currentStatusIndex + 1];
+        if (newStatus === BeeperStatus.Deployed) {
+            if (!((_a = beeper.location) === null || _a === void 0 ? void 0 : _a.lon) || !beeper.location.lat) {
+                throw new Error('Cannot deploy beeper without valid location (lon/lat)');
+            }
+        }
+        beeper.status = newStatus;
+        yield writeToJsonFile(beepers);
         return beeper;
     });
 }

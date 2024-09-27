@@ -10,8 +10,12 @@
   {
     "id": "17a5a34c-3db3-4fc8-a0f5-c38de6bc59f3",
     "name": "mmmm",
-    "status": "manufactured",
-    "createTime": "2024-09-27T05:28:33.528Z"
+    "status": "detonated",
+    "createTime": "2024-09-27T05:28:33.528Z",
+    "location": {
+      "lon": 35.78674,
+      "lat": 34.59708
+    }
   },
   {
     "id": "0fedaf45-aa73-4fbf-a0d9-d06213c95dac",

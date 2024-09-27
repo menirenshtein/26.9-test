@@ -1,6 +1,6 @@
 import {application, Request, Response } from "express";
 import {Beeper} from '../models/BeeperModel.js';
-import {getAllBeepers, findBeeperById, findBeepersByStatus, deleteBeeper, createBeeper, updateBeeperLocation} from '../services/beeperService.js'
+import {getAllBeepers, findBeeperById, findBeepersByStatus, deleteBeeper, createBeeper, updateBeeperLocation, updateStatus} from '../services/beeperService.js'
 import BeeperStatus from '../statuses/beeperStatuses.js'
 
 
@@ -87,8 +87,12 @@ export const createBeeperController = async (req: Request, res: Response): Promi
 export async function updateLocationController(req: Request, res: Response): Promise<void> {
     const { lon, lat } = req.body; 
     const beeperId = req.params.id;
+
+    const lonNumber = parseFloat(lon);
+    const latNumber = parseFloat(lat);
+
     try {
-        const updatedBeeper = await updateBeeperLocation(beeperId, lon, lat);
+        const updatedBeeper = await updateBeeperLocation(beeperId, lonNumber, latNumber);
                 res.status(200).json({
             message: 'Beeper location updated successfully.',
             beeper: updatedBeeper
@@ -96,6 +100,24 @@ export async function updateLocationController(req: Request, res: Response): Pro
     } catch (error) {
         res.status(400).json({
             message: "invalid request"
+        });
+    }
+}
+
+
+export async function updateBeeperStatusController(req: Request, res: Response): Promise<void> {
+    const beeperId = req.params.id; 
+    try {
+        
+        const updatedBeeper = await updateStatus(beeperId) as Beeper;
+        
+        res.status(200).json({
+            message: 'Beeper status updated successfully.',
+            status: updatedBeeper.status
+        });
+    } catch (error) {
+        res.status(400).json({
+            message:  "cant change the status"
         });
     }
 }
