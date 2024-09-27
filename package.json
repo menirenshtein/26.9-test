@@ -9,15 +9,14 @@
   },
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "service \r     1 create beeper gets a beeper and add it to the db\r     2 get all beepers \r     3 get beeper by id gets id as string and send the beeper\r     4 update beeper, change the beeper status\r     5 delete beeper, gets id and delete the beeper\r     6 get beeper by status, filter all the beepers and return the beeper that the status == status\r     7 add location to beeper if the beeper is in status ...",
   "devDependencies": {
     "@types/axios": "^0.9.36",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
     "@types/node": "^22.6.1",
     "@types/uuidv4": "^2.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.6.2"
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
     "@types/dotenv": "^6.1.1",
@@ -29,7 +28,9 @@
     "jsonfile": "^6.1.0",
     "nodemon": "^3.1.7",
     "tsc": "^2.0.4",
+    "typescript": "^5.6.2",
     "uuidv4": "^6.2.13",
     "yarn": "^1.22.22"
-  }
+  },
+  "keywords": []
 }

@@ -41,3 +41,19 @@ export async function deleteBeeper(id: string): Promise<boolean> {
     await writeToJsonFile(updatedBeepers);
     return updatedBeepers.length !== oldArrayLen;
 }
+
+
+
+export async function createBeeper(name: string): Promise<Beeper> {
+    const beepers: Beeper[] = await getAllBeepers();
+    const newBeeper: Beeper = {
+        id: uuidv4(),
+        name: name,
+        status: BeeperStatus.Manufactured,
+        createTime: new Date(),
+    };
+    beepers.push(newBeeper);
+    await writeToJsonFile(beepers);
+    return newBeeper;
+}
+

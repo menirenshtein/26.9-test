@@ -4,7 +4,7 @@ import beeperRouter from './routs/beeperRouter.js';
 dotenv.config();
 const app = express();
 app.use(express.json());
-app.use('/beepers', beeperRouter);
+app.use('/api', beeperRouter);
 app.listen(process.env.PORT, () => {
     console.log(`server listening `);
 });

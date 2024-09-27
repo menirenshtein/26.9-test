@@ -1,8 +1,8 @@
 import express, { Router } from "express";
-import { addBeeper } from "../controllers/beeperCrud";
+import { getAllBeepersController, getBeepersByStatusController } from "../controllers/beeperControllers.js";
 const router: Router = express.Router()
 
 
-router.route('/beepers').post(addBeeper)
-router.route('/beepers').get(addBeeper)
+router.route('/beepers').get(getAllBeepersController)
+router.route('/beepers').get(getBeepersByStatusController)
 export default router;
