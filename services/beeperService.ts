@@ -5,7 +5,7 @@ import {v4 as uuidv4} from 'uuid'
 import { Beeper } from "../models/BeeperModel.js";
 import { writeToJsonFile, readAllBeepers} from '../DAL/beeperJson.js'
 import BeeperStatus from "../statuses/beeperStatuses.js";
-// import 
+import { Latitude, Longitude} from '../data/location.js' 
 
 
 // read all beepers from db
@@ -28,7 +28,7 @@ export async function findBeeperById(beeperId: string): Promise<Beeper | null> {
 // find all the beepers by the status
 export async function findBeepersByStatus(status: string): Promise<Beeper[]> {
     const beepers: Beeper[] = await readAllBeepers();
-    return beepers.filter((b) => b.status === status);
+    return beepers.filter((b) => b.status.toLowerCase() === status.toLowerCase());
 }
 
 
@@ -43,7 +43,7 @@ export async function deleteBeeper(id: string): Promise<boolean> {
 }
 
 
-
+// the function gets the beepers name makes an object and send it back
 export async function createBeeper(name: string): Promise<Beeper> {
     const beepers: Beeper[] = await getAllBeepers();
     const newBeeper: Beeper = {
@@ -57,3 +57,24 @@ export async function createBeeper(name: string): Promise<Beeper> {
     return newBeeper;
 }
 
+export async function updateBeeperLocation(beeperId: string, lon: number, lat: number): Promise<Beeper | null> {
+
+    const lonIndex = Longitude.indexOf(lon);
+    
+    if (lonIndex === -1 || Latitude[lonIndex] !== lat) {
+        throw new Error('Invalid location: Longitude and Latitude do not match at the same index.');
+    }
+
+    const beepers: Beeper[] = await readAllBeepers();
+    const beeper = beepers.find((b) => b.id === beeperId);
+    if (!beeper) {
+        throw new Error(`Beeper with ID ${beeperId} not found.`);
+    }
+    beeper.location = {
+        lon: lon,
+        lat: lat
+    };
+
+    await writeToJsonFile(beepers);
+    return beeper;
+}

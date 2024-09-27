@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { v4 as uuidv4 } from 'uuid';
 import { writeToJsonFile, readAllBeepers } from '../DAL/beeperJson.js';
 import BeeperStatus from "../statuses/beeperStatuses.js";
-// import 
+import { Latitude, Longitude } from '../data/location.js';
 // read all beepers from db
 // Get all beepers
 export function getAllBeepers() {
@@ -30,7 +30,7 @@ export function findBeeperById(beeperId) {
 export function findBeepersByStatus(status) {
     return __awaiter(this, void 0, void 0, function* () {
         const beepers = yield readAllBeepers();
-        return beepers.filter((b) => b.status === status);
+        return beepers.filter((b) => b.status.toLowerCase() === status.toLowerCase());
     });
 }
 // Delete beeper
@@ -43,6 +43,7 @@ export function deleteBeeper(id) {
         return updatedBeepers.length !== oldArrayLen;
     });
 }
+// the function gets the beepers name makes an object and send it back
 export function createBeeper(name) {
     return __awaiter(this, void 0, void 0, function* () {
         const beepers = yield getAllBeepers();
@@ -55,5 +56,31 @@ export function createBeeper(name) {
         beepers.push(newBeeper);
         yield writeToJsonFile(beepers);
         return newBeeper;
+    });
+}
+export function updateBeeperLocation(beeperId, lon, lat) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // Find the index of the given longitude
+        const lonIndex = Longitude.indexOf(lon);
+        // Validate that the latitude exists at the same index as the longitude
+        if (lonIndex === -1 || Latitude[lonIndex] !== lat) {
+            throw new Error('Invalid location: Longitude and Latitude do not match at the same index.');
+        }
+        // Get all beepers
+        const beepers = yield readAllBeepers();
+        // Find the beeper by its ID
+        const beeper = beepers.find((b) => b.id === beeperId);
+        if (!beeper) {
+            throw new Error(`Beeper with ID ${beeperId} not found.`);
+        }
+        // Update the beeper's location (assuming beeper has a location field)
+        beeper.location = {
+            lon: lon,
+            lat: lat
+        };
+        // Save the updated beepers back to the JSON file
+        yield writeToJsonFile(beepers);
+        // Return the updated beeper
+        return beeper;
     });
 }

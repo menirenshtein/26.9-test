@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { getAllBeepers, findBeeperById, findBeepersByStatus, deleteBeeper } from '../services/beeperService.js';
+import { getAllBeepers, findBeeperById, findBeepersByStatus, deleteBeeper, createBeeper } from '../services/beeperService.js';
 import BeeperStatus from '../statuses/beeperStatuses.js';
 // the function calls the getAllBeepers function from the service, => =>
 // if its good the function sends them 
@@ -22,14 +22,14 @@ export const getAllBeepersController = (req, res) => __awaiter(void 0, void 0, v
 });
 // get all the beepers by status endpoint
 export const getBeepersByStatusController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const beeperStatus = req.body.status;
+    const beeperStatus = req.params.status;
     try {
         // vailidate if the status is correct
         if (!(beeperStatus in BeeperStatus)) {
             res.status(400).json({ message: 'Invalid status' });
             return;
         }
-        const beepers = yield findBeepersByStatus(status);
+        const beepers = yield findBeepersByStatus(beeperStatus);
         res.status(200).json(beepers);
     }
     catch (error) {
@@ -63,5 +63,20 @@ export const deleteBeeperController = (req, res) => __awaiter(void 0, void 0, vo
     }
     catch (error) {
         res.status(500).json({ message: 'Error deleting beeper', error });
+    }
+});
+// gets the name from the body check if its valid and send to the service gets the object and return it
+export const createBeeperController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name } = req.body;
+    if (!name) {
+        res.status(400).json({ message: 'Name is required to create a beeper' });
+        return;
+    }
+    try {
+        const newBeeper = yield createBeeper(name);
+        res.status(201).json(newBeeper);
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error creating beeper', error });
     }
 });

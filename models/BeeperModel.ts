@@ -6,6 +6,8 @@ export interface Beeper{
     status:BeeperStatus ,
     createTime: Date,
     blowTime?: Date,
-    xPoint?: string,
-    yPoint?: string
+    location?: {
+        lon: number;
+        lat: number;
+    };
 }
